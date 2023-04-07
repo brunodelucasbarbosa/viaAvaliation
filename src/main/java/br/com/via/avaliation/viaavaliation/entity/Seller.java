@@ -1,5 +1,6 @@
 package br.com.via.avaliation.viaavaliation.entity;
 
+import br.com.via.avaliation.viaavaliation.dto.SellerDTO;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
@@ -58,6 +59,10 @@ public class Seller implements Serializable {
         this.cpf = cpf;
         this.email = email;
         this.contractType = contractType;
+    }
+
+    public SellerDTO toDTO() {
+        return new SellerDTO(this.id, this.register, this.name, this.birthdate, this.cpf, this.email, this.contractType, this.branch);
     }
 
     public Long getId() {

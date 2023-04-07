@@ -10,4 +10,5 @@ public interface SellerRepository extends JpaRepository<Seller, String> {
     Seller findByCpf(String cpf);
     Seller findByRegister(String register);
     Seller findByEmail(String email);
+    Seller findById(Long id);
 }

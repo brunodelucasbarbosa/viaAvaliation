@@ -1,12 +1,12 @@
 package br.com.via.avaliation.viaavaliation.controller;
 
 import br.com.via.avaliation.viaavaliation.controller.request.SellerRequest;
-import br.com.via.avaliation.viaavaliation.entity.Seller;
+import br.com.via.avaliation.viaavaliation.dto.SellerDTO;
+import br.com.via.avaliation.viaavaliation.exception.ResourceNotFoundException;
 import br.com.via.avaliation.viaavaliation.service.SellerService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -18,9 +18,24 @@ public class SellerController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Seller create(@RequestBody @Valid SellerRequest request) {
-        var seller = sellerService.create(request);
-        return seller;
+    public SellerDTO create(@RequestBody @Valid SellerRequest request) {
+        return sellerService.create(request);
+    }
+
+    @GetMapping("/{field}/{param}")
+    @ResponseStatus(HttpStatus.OK)
+    public SellerDTO findByParam(@PathVariable String field, @PathVariable String param) {
+        if (field.equals("register")) {
+            return sellerService.findByRegister(param);
+        } else if (field.equals("email")) {
+            return sellerService.findByEmail(param);
+        } else if (field.equals("cpf")) {
+            return sellerService.findByCpf(param);
+        } else if (field.equals("id")) {
+            return sellerService.findById(Long.parseLong(param));
+        } else {
+            throw new ResourceNotFoundException("Seller not found");
+        }
     }
 
 }

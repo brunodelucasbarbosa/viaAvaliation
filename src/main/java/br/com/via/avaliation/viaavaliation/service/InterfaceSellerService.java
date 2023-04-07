@@ -6,6 +6,11 @@ import br.com.via.avaliation.viaavaliation.entity.Seller;
 
 public interface InterfaceSellerService {
 
-    Seller create(SellerRequest seller);
+    SellerDTO create(SellerRequest seller);
     void verifyIfExists(Seller seller);
+    SellerDTO findById(Long id);
+    SellerDTO findByRegister(String register);
+    SellerDTO findByEmail(String email);
+    SellerDTO findByCpf(String cpf);
+
 }
