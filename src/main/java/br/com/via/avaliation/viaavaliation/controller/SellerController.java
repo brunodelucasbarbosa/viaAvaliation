@@ -1,8 +1,9 @@
 package br.com.via.avaliation.viaavaliation.controller;
 
 import br.com.via.avaliation.viaavaliation.controller.request.SellerRequest;
+import br.com.via.avaliation.viaavaliation.controller.request.UpdateRequest.SellerUpdatePartialRequest;
+import br.com.via.avaliation.viaavaliation.controller.request.UpdateRequest.SellerUpdateRequest;
 import br.com.via.avaliation.viaavaliation.dto.SellerDTO;
-import br.com.via.avaliation.viaavaliation.exception.ResourceNotFoundException;
 import br.com.via.avaliation.viaavaliation.service.SellerService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,20 +23,27 @@ public class SellerController {
         return sellerService.create(request);
     }
 
-    @GetMapping("/{field}/{param}")
+    @GetMapping("/{param}")
     @ResponseStatus(HttpStatus.OK)
-    public SellerDTO findByParam(@PathVariable String field, @PathVariable String param) {
-        if (field.equals("register")) {
-            return sellerService.findByRegister(param);
-        } else if (field.equals("email")) {
-            return sellerService.findByEmail(param);
-        } else if (field.equals("cpf")) {
-            return sellerService.findByCpf(param);
-        } else if (field.equals("id")) {
-            return sellerService.findById(Long.parseLong(param));
-        } else {
-            throw new ResourceNotFoundException("Seller not found");
-        }
+    public SellerDTO findByParam(@PathVariable String param) {
+        return sellerService.findByParam(param);
     }
 
+    @PutMapping("/{param}")
+    @ResponseStatus(HttpStatus.OK) // Update entidade inteira
+    public SellerDTO update(@RequestBody @Valid SellerUpdateRequest request, @PathVariable String param) {
+        return sellerService.update(request, param);
+    }
+
+    @PatchMapping("/{param}")
+    @ResponseStatus(HttpStatus.OK) // Update parcial
+    public SellerDTO updatePartial(@RequestBody @Valid SellerUpdatePartialRequest request, @PathVariable String param) {
+        return sellerService.updatePartial(request, param);
+    }
+
+    @DeleteMapping("/{param}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable String param) {
+        sellerService.delete(param);
+    }
 }

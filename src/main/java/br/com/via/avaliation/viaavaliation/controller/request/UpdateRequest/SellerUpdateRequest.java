@@ -1,21 +1,17 @@
-package br.com.via.avaliation.viaavaliation.controller.request;
+package br.com.via.avaliation.viaavaliation.controller.request.UpdateRequest;
 
-import br.com.via.avaliation.viaavaliation.entity.ContractType;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import org.hibernate.validator.constraints.br.CPF;
 
-
-public class SellerRequest {
+public class SellerUpdateRequest {
 
     @NotEmpty(message = "Name is required")
     private String name;
 
     @Pattern(regexp = "^\\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$", message = "Birthdate must be in the format yyyy-mm-dd")
-    //@NotNull(message = "Birthdate is required and must be in the format yyyy-mm-dd")
     private String birthdate;
 
     @CPF(message = "CPF must be valid and in the format 000.000.000-00")
@@ -25,10 +21,6 @@ public class SellerRequest {
     @Email(message = "Email must be valid")
     @NotEmpty(message = "Email is required")
     private String email;
-
-    @NotNull(message = "Contract type is required and must be one of the following: CLT, PJ, OUTSORCING")
-    @JsonProperty("contract_type")
-    private ContractType contractType;
 
     public String getName() {
         return name;
@@ -60,13 +52,5 @@ public class SellerRequest {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public ContractType getContractType() {
-        return contractType;
-    }
-
-    public void setContractType(ContractType contractType) {
-        this.contractType = contractType;
     }
 }

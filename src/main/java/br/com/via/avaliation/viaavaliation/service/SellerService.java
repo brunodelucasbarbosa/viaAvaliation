@@ -1,6 +1,8 @@
 package br.com.via.avaliation.viaavaliation.service;
 
 import br.com.via.avaliation.viaavaliation.controller.request.SellerRequest;
+import br.com.via.avaliation.viaavaliation.controller.request.UpdateRequest.SellerUpdatePartialRequest;
+import br.com.via.avaliation.viaavaliation.controller.request.UpdateRequest.SellerUpdateRequest;
 import br.com.via.avaliation.viaavaliation.dto.SellerDTO;
 import br.com.via.avaliation.viaavaliation.entity.Seller;
 import br.com.via.avaliation.viaavaliation.exception.ResourceNotFoundException;
@@ -10,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 @Service
 public class SellerService implements InterfaceSellerService {
@@ -50,42 +53,62 @@ public class SellerService implements InterfaceSellerService {
     }
 
     @Override
-    public SellerDTO findById(Long id) {
-        var seller = this.sellerRepository.findById(id);
-        if (seller == null) {
-            throw new ResourceNotFoundException("Seller not found");
-        }
-        System.out.println(seller);
-        System.out.println(seller.toDTO().toString());
-        return seller.toDTO();
+    public SellerDTO findByParam(String param) {
+        var seller = this.sellerRepository.findById(Long.parseLong(param));
+        if (seller != null) { return seller.toDTO(); }
+
+        seller = this.sellerRepository.findByRegister(param);
+        if (seller != null) { return seller.toDTO(); }
+
+        seller = this.sellerRepository.findByEmail(param);
+        if (seller != null) { return seller.toDTO(); }
+
+        seller = this.sellerRepository.findByCpf(param);
+        if (seller != null) { return seller.toDTO(); }
+
+        throw new ResourceNotFoundException("Seller not found");
     }
 
     @Override
-    public SellerDTO findByRegister(String register) {
-        var seller = this.sellerRepository.findByRegister(register);
-        if (seller == null) {
-            throw new ResourceNotFoundException("Seller not found");
+    public SellerDTO update(SellerUpdateRequest seller, String param) {
+        var sellerEntity = this.findByParam(param).toEntity();
+        sellerEntity.setName(seller.getName());
+        if (seller.getBirthdate() != null) {
+            sellerEntity.setBirthdate(LocalDate.parse(seller.getBirthdate()));
+        } else {
+            sellerEntity.setBirthdate(null);
         }
-        return seller.toDTO();
+        sellerEntity.setCpf(seller.getCpf());
+        sellerEntity.setEmail(seller.getEmail());
+        return this.sellerRepository.save(sellerEntity).toDTO();
     }
 
     @Override
-    public SellerDTO findByEmail(String email) {
-        var seller = this.sellerRepository.findByEmail(email);
-        if (seller == null) {
-            throw new ResourceNotFoundException("Seller not found");
+    public SellerDTO updatePartial(SellerUpdatePartialRequest seller, String param) {
+        var sellerEntity = this.findByParam(param).toEntity();
+
+        var name = Optional.ofNullable(seller.getName()).orElse(sellerEntity.getName());
+        sellerEntity.setName(name);
+
+        if (seller.getBirthdate() == null) {
+            sellerEntity.setBirthdate(sellerEntity.getBirthdate());
+        } else {
+            sellerEntity.setBirthdate(LocalDate.parse(seller.getBirthdate()));
         }
-        return seller.toDTO();
+
+        var cpf = Optional.ofNullable(seller.getCpf()).orElse(sellerEntity.getCpf());
+        sellerEntity.setCpf(cpf);
+
+        var email = Optional.ofNullable(seller.getEmail()).orElse(sellerEntity.getEmail());
+        sellerEntity.setEmail(email);
+
+        return this.sellerRepository.save(sellerEntity).toDTO();
     }
 
     @Override
-    public SellerDTO findByCpf(String cpf) {
-        var seller = this.sellerRepository.findByCpf(cpf);
-        if (seller == null) {
-            throw new ResourceNotFoundException("Seller not found");
-        }
-        return seller.toDTO();
+    public void delete(String param) {
+        var seller = this.findByParam(param).toEntity();
+        this.sellerRepository.delete(seller);
     }
-
 
 }

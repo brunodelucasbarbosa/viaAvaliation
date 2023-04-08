@@ -2,6 +2,7 @@ package br.com.via.avaliation.viaavaliation.dto;
 
 import br.com.via.avaliation.viaavaliation.entity.Branch;
 import br.com.via.avaliation.viaavaliation.entity.ContractType;
+import br.com.via.avaliation.viaavaliation.entity.Seller;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -27,6 +28,10 @@ public class SellerDTO implements Serializable {
         this.email = email;
         this.contractType = contractType;
         this.branch = branch;
+    }
+
+    public Seller toEntity() {
+        return new Seller(this.id, this.register, this.name, this.birthdate, this.cpf, this.email, this.contractType);
     }
 
     public Long getId() {

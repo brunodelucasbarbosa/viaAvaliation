@@ -61,6 +61,16 @@ public class Seller implements Serializable {
         this.contractType = contractType;
     }
 
+    public Seller(Long id, String register, String name, LocalDate birthdate, String cpf, String email, ContractType contractType) {
+        this.id = id;
+        this.register = register;
+        this.name = name;
+        this.birthdate = birthdate;
+        this.cpf = cpf;
+        this.email = email;
+        this.contractType = contractType;
+    }
+
     public SellerDTO toDTO() {
         return new SellerDTO(this.id, this.register, this.name, this.birthdate, this.cpf, this.email, this.contractType, this.branch);
     }
