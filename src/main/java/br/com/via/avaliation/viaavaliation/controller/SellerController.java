@@ -41,6 +41,12 @@ public class SellerController {
         return sellerService.updatePartial(request, param);
     }
 
+    @PatchMapping("/{sellerParam}/{branchId}")
+    @ResponseStatus(HttpStatus.OK)
+    public SellerDTO linkBranch(@PathVariable String sellerParam, @PathVariable String branchId) {
+        return sellerService.linkToBranch(sellerParam, Long.parseLong(branchId));
+    }
+
     @DeleteMapping("/{param}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable String param) {

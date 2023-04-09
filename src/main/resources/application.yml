@@ -1,7 +1,7 @@
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/sellers?useTimezone=true&serverTimezone=UTC
+    url: jdbc:postgresql://db:5432/sellers?useTimezone=true&serverTimezone=UTC
     username: root
     password: admin
   jpa:
@@ -11,9 +11,9 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
     show-sql: true
-#  flyway:
-#    url: jdbc:postgresql://localhost:5432/sellers?useTimezone=true&serverTimezone=UTC
-#    user: root
-#    password: admin
+  flyway:
+    url: jdbc:postgresql://db:5432/sellers?useTimezone=true&serverTimezone=UTC
+    user: root
+    password: admin
   jackson:
     date-format: "yyyy-MM-dd"

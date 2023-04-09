@@ -7,12 +7,14 @@ import br.com.via.avaliation.viaavaliation.dto.SellerDTO;
 import br.com.via.avaliation.viaavaliation.entity.Seller;
 import br.com.via.avaliation.viaavaliation.exception.ResourceNotFoundException;
 import br.com.via.avaliation.viaavaliation.exception.SellerExistsException;
+import br.com.via.avaliation.viaavaliation.repository.BranchRepository;
 import br.com.via.avaliation.viaavaliation.repository.SellerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.Optional;
+import java.util.Random;
 
 @Service
 public class SellerService implements InterfaceSellerService {
@@ -20,9 +22,18 @@ public class SellerService implements InterfaceSellerService {
     @Autowired
     SellerRepository sellerRepository;
 
+    @Autowired
+    BranchRepository branchRepository;
+
     @Override
     public SellerDTO create(SellerRequest seller) {
-        var register = "98767367-OUT";
+        var register = generateRegister();
+        while (true) {
+            var registerExists = sellerRepository.findByRegister(register);
+            if (registerExists == null) {
+                break;
+            }
+        }
         var birthdate = LocalDate.parse(seller.getBirthdate());
         var entity = new Seller(
                 register,
@@ -54,8 +65,11 @@ public class SellerService implements InterfaceSellerService {
 
     @Override
     public SellerDTO findByParam(String param) {
-        var seller = this.sellerRepository.findById(Long.parseLong(param));
-        if (seller != null) { return seller.toDTO(); }
+        var seller = new Seller();
+        if (param.matches("\\d+")) {
+            seller = this.sellerRepository.findById(Long.parseLong(param));
+            if (seller != null) { return seller.toDTO(); }
+        }
 
         seller = this.sellerRepository.findByRegister(param);
         if (seller != null) { return seller.toDTO(); }
@@ -109,6 +123,26 @@ public class SellerService implements InterfaceSellerService {
     public void delete(String param) {
         var seller = this.findByParam(param).toEntity();
         this.sellerRepository.delete(seller);
+    }
+
+    @Override
+    public SellerDTO linkToBranch(Object param, Long branchId) {
+        var seller = this.findByParam(param.toString()).toEntity();
+        var branch = this.branchRepository.findById(branchId).orElseThrow(
+                () -> new ResourceNotFoundException("Branch not found"));
+        seller.setBranch(branch);
+        return this.sellerRepository.save(seller).toDTO();
+    }
+
+    public String generateRegister() {
+        String[] contractTypes = {"OUT", "CLT", "PJ"};
+
+        Random random = new Random();
+        String numbers = String.format("%08d", random.nextInt(100000000));
+        String contractType = contractTypes[random.nextInt(contractTypes.length)];
+
+        String result = numbers + "-" + contractType;
+        return result;
     }
 
 }

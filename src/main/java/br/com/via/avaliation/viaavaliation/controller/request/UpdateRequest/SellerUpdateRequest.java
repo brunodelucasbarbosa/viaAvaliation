@@ -22,6 +22,9 @@ public class SellerUpdateRequest {
     @NotEmpty(message = "Email is required")
     private String email;
 
+    public SellerUpdateRequest() {
+    }
+
     public String getName() {
         return name;
     }

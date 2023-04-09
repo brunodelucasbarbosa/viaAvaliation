@@ -30,6 +30,14 @@ public class SellerRequest {
     @JsonProperty("contract_type")
     private ContractType contractType;
 
+    public SellerRequest(String name, String birthdate, String cpf, String email, ContractType contractType) {
+        this.name = name;
+        this.birthdate = birthdate;
+        this.cpf = cpf;
+        this.email = email;
+        this.contractType = contractType;
+    }
+
     public String getName() {
         return name;
     }

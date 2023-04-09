@@ -15,4 +15,6 @@ public interface InterfaceSellerService {
     SellerDTO updatePartial(SellerUpdatePartialRequest seller, String param);
     void delete(String param);
 
+    SellerDTO linkToBranch(Object param, Long branchId);
+
 }
