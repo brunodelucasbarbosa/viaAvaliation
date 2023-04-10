@@ -7,6 +7,8 @@ import br.com.via.avaliation.viaavaliation.dto.SellerDTO;
 import br.com.via.avaliation.viaavaliation.service.SellerService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,6 +29,12 @@ public class SellerController {
     @ResponseStatus(HttpStatus.OK)
     public SellerDTO findByParam(@PathVariable String param) {
         return sellerService.findByParam(param);
+    }
+
+    @GetMapping()
+    @ResponseStatus(HttpStatus.OK)
+    public Page<SellerDTO> findAll(Pageable pageable) {
+        return sellerService.findAll(pageable);
     }
 
     @PutMapping("/{param}")

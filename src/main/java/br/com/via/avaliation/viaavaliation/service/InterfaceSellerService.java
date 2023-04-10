@@ -5,6 +5,8 @@ import br.com.via.avaliation.viaavaliation.controller.request.UpdateRequest.Sell
 import br.com.via.avaliation.viaavaliation.controller.request.UpdateRequest.SellerUpdateRequest;
 import br.com.via.avaliation.viaavaliation.dto.SellerDTO;
 import br.com.via.avaliation.viaavaliation.entity.Seller;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface InterfaceSellerService {
 
@@ -16,5 +18,9 @@ public interface InterfaceSellerService {
     void delete(String param);
 
     SellerDTO linkToBranch(Object param, Long branchId);
+
+    Long getCountSellers();
+
+    Page<SellerDTO> findAll(Pageable pageable);
 
 }

@@ -10,6 +10,8 @@ import br.com.via.avaliation.viaavaliation.exception.SellerExistsException;
 import br.com.via.avaliation.viaavaliation.repository.BranchRepository;
 import br.com.via.avaliation.viaavaliation.repository.SellerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -134,6 +136,16 @@ public class SellerService implements InterfaceSellerService {
         return this.sellerRepository.save(seller).toDTO();
     }
 
+    @Override
+    public Long getCountSellers() {
+        return this.sellerRepository.count();
+    }
+
+    @Override
+    public Page<SellerDTO> findAll(Pageable pageable) {
+        return this.sellerRepository.findAll(pageable).map(Seller::toDTO);
+    }
+
     public String generateRegister() {
         String[] contractTypes = {"OUT", "CLT", "PJ"};
 
@@ -141,8 +153,7 @@ public class SellerService implements InterfaceSellerService {
         String numbers = String.format("%08d", random.nextInt(100000000));
         String contractType = contractTypes[random.nextInt(contractTypes.length)];
 
-        String result = numbers + "-" + contractType;
-        return result;
+        return numbers + "-" + contractType;
     }
 
 }

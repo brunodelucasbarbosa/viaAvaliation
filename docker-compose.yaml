@@ -1,7 +1,14 @@
 version: '3'
 
-services:
+volumes:
+  prometheus_data:
+  grafana_data:
 
+networks:
+  api-via:
+    driver: bridge
+
+services:
   postgres:
     image: 'postgres:14.2'
     ports:
@@ -14,3 +21,20 @@ services:
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=admin
       - POSTGRES_DB=sellers
+
+  prometheus:
+    image: prom/prometheus:v2.35.0
+    volumes:
+      - ./config/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    networks:
+        - api-via
+    ports:
+      - "9090:9090"
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+        - "3000:3000"
+    networks:
+        - api-via
