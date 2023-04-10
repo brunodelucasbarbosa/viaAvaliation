@@ -34,7 +34,7 @@ Esse projeto foi desenvolvido com as seguintes tecnologias:
 
 ## 📝 Documentação 📝
 
-- Para acessar o Swagger da aplicação, basta acessar o [Swagger](http://localhost:8080/swagger-ui.html)
+- Para acessar o Swagger da aplicação, basta acessar o [Swagger](http://localhost:8080/swagger-ui.html) com a aplicação rodando
 
 ![image](./etc/swagger.png)
 

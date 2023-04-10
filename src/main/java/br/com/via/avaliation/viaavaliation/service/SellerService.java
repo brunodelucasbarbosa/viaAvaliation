@@ -9,6 +9,8 @@ import br.com.via.avaliation.viaavaliation.exception.ResourceNotFoundException;
 import br.com.via.avaliation.viaavaliation.exception.SellerExistsException;
 import br.com.via.avaliation.viaavaliation.repository.BranchRepository;
 import br.com.via.avaliation.viaavaliation.repository.SellerRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,6 +28,8 @@ public class SellerService implements InterfaceSellerService {
 
     @Autowired
     BranchRepository branchRepository;
+
+    private Logger logger = LoggerFactory.getLogger(SellerService.class.getName());
 
     @Override
     public SellerDTO create(SellerRequest seller) {
@@ -46,6 +50,7 @@ public class SellerService implements InterfaceSellerService {
                 seller.getContractType()
         );
         verifyIfExists(entity);
+        logger.info("Seller created: " + entity.toString());
         return sellerRepository.save(entity).toDTO();
     }
 
@@ -53,15 +58,13 @@ public class SellerService implements InterfaceSellerService {
     public void verifyIfExists(Seller seller) {
         var emailExists = sellerRepository.findByEmail(seller.getEmail());
         if (emailExists != null) {
+            logger.error("Email already exists: " + seller.getEmail());
             throw new SellerExistsException("Email already exists");
         }
         var cpfExists = sellerRepository.findByCpf(seller.getCpf());
         if (cpfExists != null) {
+            logger.error("CPF already exists: " + seller.getCpf());
             throw new SellerExistsException("CPF already exists");
-        }
-        var registerExists = sellerRepository.findByRegister(seller.getRegister());
-        if (registerExists != null) {
-            throw new SellerExistsException("Register already exists");
         }
     }
 
@@ -96,6 +99,7 @@ public class SellerService implements InterfaceSellerService {
         }
         sellerEntity.setCpf(seller.getCpf());
         sellerEntity.setEmail(seller.getEmail());
+        logger.info("Seller updated: " + sellerEntity.toString());
         return this.sellerRepository.save(sellerEntity).toDTO();
     }
 
@@ -118,12 +122,14 @@ public class SellerService implements InterfaceSellerService {
         var email = Optional.ofNullable(seller.getEmail()).orElse(sellerEntity.getEmail());
         sellerEntity.setEmail(email);
 
+        logger.info("Seller updated: " + sellerEntity.toString());
         return this.sellerRepository.save(sellerEntity).toDTO();
     }
 
     @Override
     public void delete(String param) {
         var seller = this.findByParam(param).toEntity();
+        logger.info("Seller deleted: " + seller.toString());
         this.sellerRepository.delete(seller);
     }
 
@@ -133,6 +139,7 @@ public class SellerService implements InterfaceSellerService {
         var branch = this.branchRepository.findById(branchId).orElseThrow(
                 () -> new ResourceNotFoundException("Branch not found"));
         seller.setBranch(branch);
+        logger.info("Seller linked to branch: " + seller.toString());
         return this.sellerRepository.save(seller).toDTO();
     }
 
