@@ -1,4 +1,4 @@
-package br.com.via.avaliation.viaavaliation.observability;
+package br.com.via.avaliation.viaavaliation.config.observability;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.http.ResponseEntity;

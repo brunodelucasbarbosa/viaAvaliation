@@ -32,3 +32,4 @@ management:
         enabled: true
     prometheus:
       enabled: true
+

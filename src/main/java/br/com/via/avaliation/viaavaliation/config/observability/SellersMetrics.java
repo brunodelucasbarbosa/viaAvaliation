@@ -1,4 +1,4 @@
-package br.com.via.avaliation.viaavaliation.observability;
+package br.com.via.avaliation.viaavaliation.config.observability;
 
 import br.com.via.avaliation.viaavaliation.service.SellerService;
 import io.micrometer.core.instrument.Gauge;
