@@ -1,10 +1,10 @@
 package br.com.via.avaliation.viaavaliation.controller;
 
-import br.com.via.avaliation.viaavaliation.controller.request.SellerRequest;
+import br.com.via.avaliation.viaavaliation.controller.request.SellerCreateRequest;
 import br.com.via.avaliation.viaavaliation.controller.request.UpdateRequest.SellerUpdatePartialRequest;
 import br.com.via.avaliation.viaavaliation.controller.request.UpdateRequest.SellerUpdateRequest;
 import br.com.via.avaliation.viaavaliation.dto.SellerDTO;
-import br.com.via.avaliation.viaavaliation.service.SellerService;
+import br.com.via.avaliation.viaavaliation.service.InterfaceSellerService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -17,11 +17,11 @@ import org.springframework.web.bind.annotation.*;
 public class SellerController {
 
     @Autowired
-    private SellerService sellerService;
+    private InterfaceSellerService sellerService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public SellerDTO create(@RequestBody @Valid SellerRequest request) {
+    public SellerDTO create(@RequestBody @Valid SellerCreateRequest request) {
         return sellerService.create(request);
     }
 
@@ -47,12 +47,6 @@ public class SellerController {
     @ResponseStatus(HttpStatus.OK) // Update parcial
     public SellerDTO updatePartial(@RequestBody @Valid SellerUpdatePartialRequest request, @PathVariable String param) {
         return sellerService.updatePartial(request, param);
-    }
-
-    @PatchMapping("/{sellerParam}/{branchId}")
-    @ResponseStatus(HttpStatus.OK)
-    public SellerDTO linkBranch(@PathVariable String sellerParam, @PathVariable String branchId) {
-        return sellerService.linkToBranch(sellerParam, Long.parseLong(branchId));
     }
 
     @DeleteMapping("/{param}")

@@ -31,7 +31,7 @@ class SellerServiceTest {
     MockFactory mockFactory;
 
     @InjectMocks
-    private SellerService sellerService;
+    private InterfaceSellerService sellerService;
 
     @Mock
     SellerRepository sellerRepository;
@@ -52,7 +52,7 @@ class SellerServiceTest {
         when(sellerRepository.save(any(Seller.class))).thenReturn(seller);
         var result = sellerService.create(sellerRequest);
         assertNotNull(result);
-        assertEquals(sellerDTO.getRegister(),result.getRegister());
+        assertEquals(sellerDTO.register(),result.register());
     }
 
     @Test
@@ -79,7 +79,7 @@ class SellerServiceTest {
 
         // Assert
         assertNotNull(result);
-        assertEquals(result.getRegister(), param);
+        assertEquals(result.register(), param);
         verify(sellerRepository, times(1)).findByRegister(param);
     }
 
@@ -95,9 +95,9 @@ class SellerServiceTest {
         var result = sellerService.update(updatedSeller, param);
 
         // Assert
-        assertEquals(existingSeller.getId(), result.getId());
-        assertEquals(updatedSeller.getName(), result.getName());
-        assertEquals(LocalDate.parse(updatedSeller.getBirthdate()), result.getBirthdate());
+        assertEquals(existingSeller.id(), result.id());
+        assertEquals(updatedSeller.getName(), result.name());
+        assertEquals(LocalDate.parse(updatedSeller.getBirthdate()), result.birthdate());
     }
 
     @Test

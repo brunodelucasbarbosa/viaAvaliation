@@ -1,0 +1,101 @@
+[
+  {
+    "httpRequest": {
+      "method": "GET",
+      "path": "/api/v1/branches"
+    },
+    "httpResponse": {
+      "body": [
+        {
+          "id": 1,
+          "name": "Ambev",
+          "cnpj": "23.644.543/0001-31",
+          "city": "São Paulo",
+          "uf": "SP",
+          "type": "Indústria de bebidas",
+          "active": true,
+          "created_at": "2022-03-01 14:20:00",
+          "updated_at": null
+        },
+        {
+          "id": 2,
+          "name": "Nestlé",
+          "cnpj": "60.409.075/0001-17",
+          "city": "São Paulo",
+          "uf": "SP",
+          "type": "Alimentícia",
+          "active": true,
+          "created_at": "2022-02-27 09:40:00",
+          "updated_at": null
+        },
+        {
+          "id": 3,
+          "name": "Petrobras",
+          "cnpj": "33.000.167/0001-01",
+          "city": "Rio de Janeiro",
+          "uf": "RJ",
+          "type": "Petróleo",
+          "active": true,
+          "created_at": "2022-02-25 16:35:00",
+          "updated_at": null
+        },
+        {
+          "id": 4,
+          "name": "Bradesco",
+          "cnpj": "60.746.948/0001-12",
+          "city": "Osasco",
+          "uf": "SP",
+          "type": "Financeira",
+          "active": true,
+          "created_at": "2022-03-02 10:05:00",
+          "updated_at": null
+        },
+        {
+          "id": 5,
+          "name": "Carrefour",
+          "cnpj": "45.501.288/0001-09",
+          "city": "Barueri",
+          "uf": "SP",
+          "type": "Varejista",
+          "active": true,
+          "created_at": "2022-02-28 08:50:00",
+          "updated_at": null
+        },
+        {
+          "id": 6,
+          "name": "Vale",
+          "cnpj": "33.592.510/0001-54",
+          "city": "Rio de Janeiro",
+          "uf": "RJ",
+          "type": "Mineração",
+          "active": true,
+          "created_at": "2022-02-27 13:25:00",
+          "updated_at": null
+        },
+        {
+          "id": 7,
+          "name": "Itaú Unibanco",
+          "cnpj": "60.701.190/0001-04",
+          "city": "São Paulo",
+          "uf": "SP",
+          "type": "Financeira",
+          "active": true,
+          "created_at": "2022-03-01 11:15:00",
+          "updated_at": null
+        },
+        {
+          "id": 8,
+          "name": "Johnson & Johnson",
+          "cnpj": "52.896.503/0001-47",
+          "city": "São Paulo",
+          "uf": "SP",
+          "type": "Farmacêutica",
+          "active": true,
+          "created_at": "2022-03-01 18:30:00",
+          "updated_at": null
+        }
+      ],
+      "statusCode": 200
+    }
+  }
+]

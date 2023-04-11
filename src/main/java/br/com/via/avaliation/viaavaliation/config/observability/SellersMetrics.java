@@ -1,5 +1,6 @@
 package br.com.via.avaliation.viaavaliation.config.observability;
 
+import br.com.via.avaliation.viaavaliation.service.InterfaceSellerService;
 import br.com.via.avaliation.viaavaliation.service.SellerService;
 import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
@@ -15,7 +16,7 @@ import java.time.format.DateTimeFormatter;
 public class SellersMetrics implements MeterBinder {
 
     @Autowired
-    private SellerService sellerService;
+    private InterfaceSellerService sellerService;
 
     @Override
     public void bindTo(MeterRegistry meterRegistry) {

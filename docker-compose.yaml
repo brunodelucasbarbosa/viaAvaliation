@@ -38,3 +38,15 @@ services:
         - "3000:3000"
     networks:
         - api-via
+
+  mockserver:
+    image: mockserver/mockserver
+    ports:
+      - 1080:1080
+    environment:
+      MOCKSERVER_INITIALIZATION_JSON_PATH: "/config/mockserver.json"
+      MOCKSERVER_WATCH_INITIALIZATION_JSON: "true"
+    volumes:
+      - type: bind
+        source: .
+        target: /config

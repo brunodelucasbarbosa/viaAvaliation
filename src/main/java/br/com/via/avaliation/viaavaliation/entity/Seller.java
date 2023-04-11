@@ -1,11 +1,14 @@
 package br.com.via.avaliation.viaavaliation.entity;
 
+import br.com.via.avaliation.viaavaliation.dto.BranchDTO;
 import br.com.via.avaliation.viaavaliation.dto.SellerDTO;
+import br.com.via.avaliation.viaavaliation.exception.ResourceNotFoundException;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Objects;
 
 @Entity
@@ -33,20 +36,8 @@ public class Seller implements Serializable {
     @Column(nullable = false) @Enumerated(EnumType.STRING)
     private ContractType contractType;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "branch_id")
-    private Branch branch;
-
-    public Seller(String register, String name, LocalDate birthdate, String cpf, String email,
-                  ContractType contractType, Branch branch) {
-        this.register = register;
-        this.name = name;
-        this.birthdate = birthdate;
-        this.cpf = cpf;
-        this.email = email;
-        this.contractType = contractType;
-        this.branch = branch;
-    }
+    @Column(nullable = false, name = "branch_id")
+    private Long branchId;
 
     public Seller() {
 
@@ -71,8 +62,16 @@ public class Seller implements Serializable {
         this.contractType = contractType;
     }
 
-    public SellerDTO toDTO() {
-        return new SellerDTO(this.id, this.register, this.name, this.birthdate, this.cpf, this.email, this.contractType, this.branch);
+    public Seller(String register, String name, LocalDate birthdate, String cpf, String email,
+                  ContractType contractType, Long branchId) {
+        this.id = id;
+        this.register = register;
+        this.name = name;
+        this.birthdate = birthdate;
+        this.cpf = cpf;
+        this.email = email;
+        this.contractType = contractType;
+        this.branchId = branchId;
     }
 
     public Long getId() {
@@ -131,14 +130,6 @@ public class Seller implements Serializable {
         this.contractType = contractType;
     }
 
-    public Branch getBranch() {
-        return branch;
-    }
-
-    public void setBranch(Branch branch) {
-        this.branch = branch;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -151,6 +142,15 @@ public class Seller implements Serializable {
         return Objects.hash(getId(), getRegister(), getName(), getBirthdate(), getCpf(), getEmail(), getContractType());
     }
 
+
+    public Long getBranchId() {
+        return branchId;
+    }
+
+    public void setBranchId(Long branchId) {
+        this.branchId = branchId;
+    }
+
     @Override
     public String toString() {
         return "Seller{" +
@@ -161,7 +161,7 @@ public class Seller implements Serializable {
                 ", cpf='" + cpf + '\'' +
                 ", email='" + email + '\'' +
                 ", contractType=" + contractType +
-                ", branch=" + branch +
+                ", branchId=" + branchId +
                 '}';
     }
 }

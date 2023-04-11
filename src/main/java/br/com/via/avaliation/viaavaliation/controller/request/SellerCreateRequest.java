@@ -9,7 +9,7 @@ import jakarta.validation.constraints.Pattern;
 import org.hibernate.validator.constraints.br.CPF;
 
 
-public class SellerRequest {
+public class SellerCreateRequest {
 
     @NotEmpty(message = "Name is required")
     private String name;
@@ -30,12 +30,20 @@ public class SellerRequest {
     @JsonProperty("contract_type")
     private ContractType contractType;
 
-    public SellerRequest(String name, String birthdate, String cpf, String email, ContractType contractType) {
+    @NotNull(message = "Branch id is required")
+    private Long branch_id;
+
+    public Long getBranch_id() {
+        return this.branch_id;
+    }
+
+    public SellerCreateRequest(String name, String birthdate, String cpf, String email, ContractType contractType, Long branch_id) {
         this.name = name;
         this.birthdate = birthdate;
         this.cpf = cpf;
         this.email = email;
         this.contractType = contractType;
+        this.branch_id = branch_id;
     }
 
     public String getName() {
@@ -58,23 +66,23 @@ public class SellerRequest {
         return cpf;
     }
 
-    public void setCpf(String cpf) {
-        this.cpf = cpf;
-    }
-
     public String getEmail() {
         return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public ContractType getContractType() {
         return contractType;
     }
 
-    public void setContractType(ContractType contractType) {
-        this.contractType = contractType;
+    @Override
+    public String toString() {
+        return "SellerRequest{" +
+                "name='" + name + '\'' +
+                ", birthdate='" + birthdate + '\'' +
+                ", cpf='" + cpf + '\'' +
+                ", email='" + email + '\'' +
+                ", contractType=" + contractType +
+                ", branch_id=" + branch_id +
+                '}';
     }
 }

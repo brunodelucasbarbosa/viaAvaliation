@@ -1,13 +1,13 @@
 package br.com.via.avaliation.viaavaliation.service;
 
-import br.com.via.avaliation.viaavaliation.controller.request.SellerRequest;
+import br.com.via.avaliation.viaavaliation.controller.request.SellerCreateRequest;
 import br.com.via.avaliation.viaavaliation.controller.request.UpdateRequest.SellerUpdatePartialRequest;
 import br.com.via.avaliation.viaavaliation.controller.request.UpdateRequest.SellerUpdateRequest;
 import br.com.via.avaliation.viaavaliation.dto.SellerDTO;
 import br.com.via.avaliation.viaavaliation.entity.Seller;
 import br.com.via.avaliation.viaavaliation.exception.ResourceNotFoundException;
 import br.com.via.avaliation.viaavaliation.exception.SellerExistsException;
-import br.com.via.avaliation.viaavaliation.repository.BranchRepository;
+import br.com.via.avaliation.viaavaliation.integration.InterfaceBranchService;
 import br.com.via.avaliation.viaavaliation.repository.SellerRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,12 +27,12 @@ public class SellerService implements InterfaceSellerService {
     SellerRepository sellerRepository;
 
     @Autowired
-    BranchRepository branchRepository;
+    InterfaceBranchService branchService;
 
-    private Logger logger = LoggerFactory.getLogger(SellerService.class.getName());
+    private final Logger logger = LoggerFactory.getLogger(SellerService.class.getName());
 
     @Override
-    public SellerDTO create(SellerRequest seller) {
+    public SellerDTO create(SellerCreateRequest seller) {
         var register = generateRegister();
         while (true) {
             var registerExists = sellerRepository.findByRegister(register);
@@ -47,11 +47,14 @@ public class SellerService implements InterfaceSellerService {
                 birthdate,
                 seller.getCpf(),
                 seller.getEmail(),
-                seller.getContractType()
+                seller.getContractType(),
+                seller.getBranch_id()
         );
-        verifyIfExists(entity);
-        logger.info("Seller created: " + entity.toString());
-        return sellerRepository.save(entity).toDTO();
+
+        this.verifyIfExists(entity);
+        branchService.validateIfBranchExists(seller.getBranch_id());
+        logger.info("Seller created: " + entity);
+        return toDTO(sellerRepository.save(entity));
     }
 
     @Override
@@ -73,17 +76,19 @@ public class SellerService implements InterfaceSellerService {
         var seller = new Seller();
         if (param.matches("\\d+")) {
             seller = this.sellerRepository.findById(Long.parseLong(param));
-            if (seller != null) { return seller.toDTO(); }
+            if (seller != null) {
+                return toDTO(seller);
+            }
         }
 
         seller = this.sellerRepository.findByRegister(param);
-        if (seller != null) { return seller.toDTO(); }
+        if (seller != null) { return toDTO(seller); }
 
         seller = this.sellerRepository.findByEmail(param);
-        if (seller != null) { return seller.toDTO(); }
+        if (seller != null) { return toDTO(seller); }
 
         seller = this.sellerRepository.findByCpf(param);
-        if (seller != null) { return seller.toDTO(); }
+        if (seller != null) { return toDTO(seller); }
 
         throw new ResourceNotFoundException("Seller not found");
     }
@@ -99,8 +104,8 @@ public class SellerService implements InterfaceSellerService {
         }
         sellerEntity.setCpf(seller.getCpf());
         sellerEntity.setEmail(seller.getEmail());
-        logger.info("Seller updated: " + sellerEntity.toString());
-        return this.sellerRepository.save(sellerEntity).toDTO();
+        logger.info("Seller updated: " + sellerEntity);
+        return toDTO(this.sellerRepository.save(sellerEntity));
     }
 
     @Override
@@ -122,25 +127,15 @@ public class SellerService implements InterfaceSellerService {
         var email = Optional.ofNullable(seller.getEmail()).orElse(sellerEntity.getEmail());
         sellerEntity.setEmail(email);
 
-        logger.info("Seller updated: " + sellerEntity.toString());
-        return this.sellerRepository.save(sellerEntity).toDTO();
+        logger.info("Seller updated: " + sellerEntity);
+        return toDTO(this.sellerRepository.save(sellerEntity));
     }
 
     @Override
     public void delete(String param) {
         var seller = this.findByParam(param).toEntity();
-        logger.info("Seller deleted: " + seller.toString());
+        logger.info("Seller deleted: " + seller);
         this.sellerRepository.delete(seller);
-    }
-
-    @Override
-    public SellerDTO linkToBranch(Object param, Long branchId) {
-        var seller = this.findByParam(param.toString()).toEntity();
-        var branch = this.branchRepository.findById(branchId).orElseThrow(
-                () -> new ResourceNotFoundException("Branch not found"));
-        seller.setBranch(branch);
-        logger.info("Seller linked to branch: " + seller.toString());
-        return this.sellerRepository.save(seller).toDTO();
     }
 
     @Override
@@ -150,7 +145,7 @@ public class SellerService implements InterfaceSellerService {
 
     @Override
     public Page<SellerDTO> findAll(Pageable pageable) {
-        return this.sellerRepository.findAll(pageable).map(Seller::toDTO);
+        return this.sellerRepository.findAll(pageable).map(this::toDTO);
     }
 
     public String generateRegister() {
@@ -163,4 +158,16 @@ public class SellerService implements InterfaceSellerService {
         return numbers + "-" + contractType;
     }
 
+    public SellerDTO toDTO(Seller seller) {
+        var branch = branchService.getBranchById(seller.getBranchId());
+        return new SellerDTO(
+                seller.getId(),
+                seller.getRegister(),
+                seller.getName(),
+                seller.getBirthdate(),
+                seller.getCpf(),
+                seller.getEmail(),
+                seller.getContractType(),
+                seller.getBranchId(), branch);
+    }
 }
