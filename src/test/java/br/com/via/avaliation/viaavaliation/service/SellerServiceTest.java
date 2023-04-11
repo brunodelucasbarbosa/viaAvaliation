@@ -1,11 +1,11 @@
 package br.com.via.avaliation.viaavaliation.service;
 
-import br.com.via.avaliation.viaavaliation.controller.request.UpdateRequest.SellerUpdatePartialRequest;
 import br.com.via.avaliation.viaavaliation.controller.request.UpdateRequest.SellerUpdateRequest;
-import br.com.via.avaliation.viaavaliation.dto.SellerDTO;
 import br.com.via.avaliation.viaavaliation.entity.Seller;
 import br.com.via.avaliation.viaavaliation.exception.ResourceNotFoundException;
 import br.com.via.avaliation.viaavaliation.exception.SellerExistsException;
+import br.com.via.avaliation.viaavaliation.integration.BranchService;
+import br.com.via.avaliation.viaavaliation.integration.InterfaceBranchService;
 import br.com.via.avaliation.viaavaliation.mock.MockFactory;
 import br.com.via.avaliation.viaavaliation.repository.SellerRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,10 +18,10 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -31,10 +31,13 @@ class SellerServiceTest {
     MockFactory mockFactory;
 
     @InjectMocks
-    private InterfaceSellerService sellerService;
+    private InterfaceSellerService sellerService = new SellerService();
+
 
     @Mock
     SellerRepository sellerRepository;
+    @Mock
+    InterfaceBranchService branchService;
 
     @BeforeEach
     void setUp() {
@@ -50,6 +53,10 @@ class SellerServiceTest {
 
 
         when(sellerRepository.save(any(Seller.class))).thenReturn(seller);
+        doAnswer(invocation -> {
+            Object arg0 = invocation.getArgument(0);
+            return arg0;
+        }).when(branchService).validateIfBranchExists(any(Long.class));
         var result = sellerService.create(sellerRequest);
         assertNotNull(result);
         assertEquals(sellerDTO.register(),result.register());
@@ -74,10 +81,8 @@ class SellerServiceTest {
 
         when(sellerRepository.findByRegister(param)).thenReturn(seller);
 
-        // Act
         var result = sellerService.findByParam(param);
 
-        // Assert
         assertNotNull(result);
         assertEquals(result.register(), param);
         verify(sellerRepository, times(1)).findByRegister(param);
@@ -91,10 +96,8 @@ class SellerServiceTest {
         when(sellerRepository.findById(Long.parseLong(param))).thenReturn(existingSeller.toEntity());
         when(sellerRepository.save(any(Seller.class))).thenReturn(existingSeller.toEntity());
 
-        // Act
         var result = sellerService.update(updatedSeller, param);
 
-        // Assert
         assertEquals(existingSeller.id(), result.id());
         assertEquals(updatedSeller.getName(), result.name());
         assertEquals(LocalDate.parse(updatedSeller.getBirthdate()), result.birthdate());
@@ -117,9 +120,11 @@ class SellerServiceTest {
 
     @Test
     void delete() {
-    }
+        var sellerToDelete = mockFactory.mockEntity();
+        when(sellerRepository.findByRegister("param")).thenReturn(sellerToDelete);
 
-    @Test
-    void linkToBranch() {
+        sellerService.delete("param");
+
+        verify(sellerRepository, times(1)).delete(sellerToDelete);
     }
 }
