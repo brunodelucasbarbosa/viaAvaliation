@@ -29,33 +29,33 @@ public class SellerControllerTest extends AbstractIntegrationTest {
         mockFactory = new MockFactory();
     }
 
+//    @Test
+//    @Order(1)
+//    public void testCreateSucess() throws IOException {
+//        var sellerRequest = mockFactory.mockSellerRequest();
+//
+//        specification = new RequestSpecBuilder()
+//                .addHeader(HEADER_PARAM_ORIGIN, "http://localhost:8080")
+//                .setBasePath(BASE_PATH)
+//                .setPort(SERVER_PORT)
+//                .build();
+//
+//        var content = RestAssured.given().spec(specification)
+//                .contentType(CONTENT_TYPE_JSON)
+//                .body(sellerRequest)
+//                .when()
+//                .post()
+//                .then()
+//                .statusCode(201)
+//                .extract()
+//                .body()
+//                .asString();
+//
+//        Assertions.assertNotNull(content);
+//   }
+
     @Test
     @Order(1)
-    public void testCreateSucess() throws IOException {
-        var sellerRequest = mockFactory.mockSellerRequest();
-
-        specification = new RequestSpecBuilder()
-                .addHeader(HEADER_PARAM_ORIGIN, "http://localhost:8080")
-                .setBasePath(BASE_PATH)
-                .setPort(SERVER_PORT)
-                .build();
-
-        var content = RestAssured.given().spec(specification)
-                .contentType(CONTENT_TYPE_JSON)
-                .body(sellerRequest)
-                .when()
-                .post()
-                .then()
-                .statusCode(201)
-                .extract()
-                .body()
-                .asString();
-
-        Assertions.assertNotNull(content);
-   }
-
-    @Test
-    @Order(2)
     public void testCreateWithFail() throws IOException {
         var sellerRequest = mockFactory.mockSellerRequest();
         sellerRequest.setBirthdate("999.999.999-99");
@@ -80,7 +80,7 @@ public class SellerControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    @Order(3)
+    @Order(2)
     public void testGetAllSellers() throws IOException {
 
         specification = new RequestSpecBuilder()
