@@ -56,7 +56,7 @@ public class SellerControllerTest extends AbstractIntegrationTest {
 
     @Test
     @Order(2)
-    public void testCreateWithVail() throws IOException {
+    public void testCreateWithFail() throws IOException {
         var sellerRequest = mockFactory.mockSellerRequest();
         sellerRequest.setBirthdate("999.999.999-99");
         specification = new RequestSpecBuilder()
