@@ -33,3 +33,9 @@ management:
     prometheus:
       enabled: true
 
+resilience4j:
+  circuitbreaker:
+    instances:
+      branchServiceCB:
+        minimum-number-of-calls: 4
+        sliding-window-size: 8
